@@ -26,7 +26,6 @@ var domain;
 function EventEmitter() {
   EventEmitter.init.call(this);
 }
-module.exports = EventEmitter;
 
 // Backwards-compat with node 0.10.x
 EventEmitter.EventEmitter = EventEmitter;
@@ -182,7 +181,7 @@ EventEmitter.prototype.emit = function emit(type) {
       throw er; // Unhandled 'error' event
     } else {
       // At least give some kind of context to the user
-      const err = new Error('Unhandled "error" event. (' + er + ')');
+      var err = new Error('Unhandled "error" event. (' + er + ')');
       err.context = er;
       throw err;
     }
@@ -278,8 +277,8 @@ function _addListener(target, type, listener, prepend) {
       m = $getMaxListeners(target);
       if (m && m > 0 && existing.length > m) {
         existing.warned = true;
-        const warnMsg = 'Possible EventEmitter memory leak detected. ' +
-                            `${existing.length} ${String(type)} listeners ` +
+        var warnMsg = 'Possible EventEmitter memory leak detected. ' +
+                            existing.length + ' ' + String(type) + ' listeners ' +
                             'added. Use emitter.setMaxListeners() to ' +
                             'increase limit';
         console.warn(warnMsg);
@@ -316,7 +315,7 @@ function onceWrapper() {
         return this.listener.call(this.target, arguments[0], arguments[1],
                                   arguments[2]);
       default:
-        const args = new Array(arguments.length);
+        var args = new Array(arguments.length);
         for (var i = 0; i < args.length; ++i)
           args[i] = arguments[i];
         this.listener.apply(this.target, args);
@@ -325,7 +324,7 @@ function onceWrapper() {
 }
 
 function _onceWrap(target, type, listener) {
-  var state = { fired: false, wrapFn: undefined, target, type, listener };
+  var state = { fired: false, wrapFn: undefined, target: target, type: type, listener: listener };
   var wrapped = onceWrapper.bind(state);
   wrapped.listener = listener;
   state.wrapFn = wrapped;
@@ -479,12 +478,12 @@ EventEmitter.listenerCount = function(emitter, type) {
   }
 };
 
-EventEmitter.prototype.listenerCount = listenerCount;
+
 function listenerCount(type) {
-  const events = this._events;
+  var events = this._events;
 
   if (events) {
-    const evlistener = events[type];
+    var evlistener = events[type];
 
     if (typeof evlistener === 'function') {
       return 1;
@@ -495,6 +494,9 @@ function listenerCount(type) {
 
   return 0;
 }
+
+EventEmitter.prototype.listenerCount = listenerCount;
+
 
 EventEmitter.prototype.eventNames = function eventNames() {
   return this._eventsCount > 0 ? Reflect.ownKeys(this._events) : [];
@@ -515,9 +517,11 @@ function arrayClone(arr, n) {
 }
 
 function unwrapListeners(arr) {
-  const ret = new Array(arr.length);
+  var ret = new Array(arr.length);
   for (var i = 0; i < ret.length; ++i) {
     ret[i] = arr[i].listener || arr[i];
   }
   return ret;
 }
+
+module.exports = EventEmitter;
