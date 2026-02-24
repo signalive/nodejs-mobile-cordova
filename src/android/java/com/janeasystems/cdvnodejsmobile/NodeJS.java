@@ -375,7 +375,7 @@ public class NodeJS extends CordovaPlugin {
     SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = prefs.edit();
     editor.putLong(LAST_UPDATED_TIME, this.lastUpdateTime);
-    editor.commit();
+    editor.apply();
   }
 
   private void emptyTrash() {
@@ -455,7 +455,7 @@ public class NodeJS extends CordovaPlugin {
   }
 
   private ArrayList<String> readFileFromAssets(String filename){
-    ArrayList lines = new ArrayList();
+    ArrayList<String> lines = new ArrayList<>();
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(filename)));
       String line = reader.readLine();
@@ -468,7 +468,7 @@ public class NodeJS extends CordovaPlugin {
       Log.d(LOGTAG, "File not found: " + filename);
     } catch (IOException e) {
       e.printStackTrace();
-      lines = new ArrayList();
+      lines = new ArrayList<>();
     }
     return lines;
   }
@@ -528,7 +528,8 @@ public class NodeJS extends CordovaPlugin {
   }
 
   private static boolean getOptionRedirectOutputToLogcat(final JSONObject startOptions) {
-    if (BuildConfig.DEBUG) {
+    boolean isDebug = (context.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    if (isDebug) {
       if (startOptions.names() != null) {
         for (int i = 0; i < startOptions.names().length(); i++) {
           try {
