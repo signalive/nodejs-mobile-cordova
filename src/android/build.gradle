@@ -1,4 +1,4 @@
-ext.cdvMinSdkVersion = 22
+ext.cdvMinSdkVersion = 24
 
 buildscript {
     repositories {
@@ -219,7 +219,7 @@ cdvPluginPostBuildExtras += { ->
             task "MakeToolchain${abi_name}" (type:Exec) {
                 description = "Building a native toolchain to compile nodejs-mobile native modules for ${abi_name}."
                 executable = "${ndk_bundle_path}/build/tools/make-standalone-toolchain.sh"
-                args "--toolchain=${temp_toolchain_name}-${temp_cc_ver}", "--arch=${temp_arch}", "--install-dir=${standalone_toolchain}", "--stl=libc++", "--force", "--platform=android-22"
+                args "--toolchain=${temp_toolchain_name}-${temp_cc_ver}", "--arch=${temp_arch}", "--install-dir=${standalone_toolchain}", "--stl=libc++", "--force", "--platform=android-24"
                 outputs.file "${standalone_toolchain}"
             }
 
